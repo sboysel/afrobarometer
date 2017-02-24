@@ -1,12 +1,11 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-    ## Installing afrobarometer
+`afrobarometer`: Load Afrobarometer Data into R
+===============================================
 
-    ## '/usr/lib64/R/bin/R' CMD INSTALL '/home/sam/repos/afrobarometer'
+The `afrobarometer` automates laoding Afrobarometer Survey data into the R environment. Open access data is downloaded as needed. The user supplies any optional restricted access data. Data is cached in the Afrobarometer data directory, merged in a master SQLite database in the data directory, and read into R as a local `tibble`.
 
-Afrobarometer Data
-==================
-
-**Data Source:** <http://www.afrobarometer.org/data> - [Data usage policy](http://www.afrobarometer.org/data/data-use-policy) - [IPUMS-DHS](https://www.idhsdata.org/idhs/)
+-   [Data](http://www.afrobarometer.org/data)
+-   [Data usage policy](http://www.afrobarometer.org/data/data-use-policy)
 
 Install
 -------
@@ -39,18 +38,18 @@ Usage
 ``` r
 library(afrobarometer)
 afrb_dir(path = tempdir())
-#> Setting options(afrobarometer.data) to /tmp/Rtmpi5BPFF
-#> Setting options(afrobarometer.sqlite) to /tmp/Rtmpi5BPFF/afrobarometer.sqlite
+#> Setting options(afrobarometer.data) to /tmp/Rtmpp23Vpd
+#> Setting options(afrobarometer.sqlite) to /tmp/Rtmpp23Vpd/afrobarometer.sqlite
 #> Spatial data should be placed in the `locations` subdirectory of the Afrobarometer data directory. For example, if you have spatial data for Rounds 3 and 4, you should place the spatial data as follows:
 #> 
-#> /tmp/Rtmpi5BPFF/locations/Locations_R3.csv
-#> /tmp/Rtmpi5BPFF/locations/Locations_R4.csv
+#> /tmp/Rtmpp23Vpd/locations/Locations_R3.csv
+#> /tmp/Rtmpp23Vpd/locations/Locations_R4.csv
 #> 
 #> To change the data directory to file path x, use afrobarometer::set_data_dir(x)
 #> Creating directories
-#>  - /tmp/Rtmpi5BPFF ...
-#>  - /tmp/Rtmpi5BPFF/questionnaires ...
-#>  - /tmp/Rtmpi5BPFF/locations ...
+#>  - /tmp/Rtmpp23Vpd ...
+#>  - /tmp/Rtmpp23Vpd/questionnaires ...
+#>  - /tmp/Rtmpp23Vpd/locations ...
 ```
 
 `afrb_dir` sets the local cache directory to `path`, creating subdirectories and the local database file as needed. If you have access to spatial location data for each round, place the CSV files in the `location` subdirectory of the Afrobarometer and name them `Locations_R1.csv`, `Locations_R2.csv`, etc. For example, if you have spatial information for rounds 3 and 4, your Afrobarometer data directory should look like this after running `afrb_dir`:

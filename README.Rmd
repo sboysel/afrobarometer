@@ -6,7 +6,7 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -15,12 +15,16 @@ knitr::opts_chunk$set(
 devtools::install()
 ```
 
-# Afrobarometer Data
+# `afrobarometer`: Load Afrobarometer Data into R
 
-**Data Source:** [http://www.afrobarometer.org/data](http://www.afrobarometer.org/data)
-  - [Data usage policy](http://www.afrobarometer.org/data/data-use-policy)
-  - [IPUMS-DHS](https://www.idhsdata.org/idhs/)
+The `afrobarometer` automates laoding Afrobarometer Survey data into the R
+environment.  Open access data is downloaded as needed.  The user supplies any
+optional restricted access data.  Data is cached in the Afrobarometer data
+directory, merged in a master SQLite database in the data directory, and read
+into R as a local `tibble`.
 
+- [Data](http://www.afrobarometer.org/data)  
+- [Data usage policy](http://www.afrobarometer.org/data/data-use-policy)
 
 ## Install
 
