@@ -65,7 +65,7 @@ Afrobarometer and name them `Locations_R1.csv`, `Locations_R2.csv`, etc. For
 example, if you have spatial information for rounds 3 and 4, your Afrobarometer
 data directory should look like this after running `afrb_dir`:  
 
-```{bash}
+```
 .
 ├── locations
 │   ├── Locations_R3.csv
