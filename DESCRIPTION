@@ -1,0 +1,21 @@
+Package: afrobarometer
+Type: Package
+Title: Load Afrobarometer data 
+Version: 0.1.0
+Authors@R: person("Sam", "Boysel", email = "sboysel@gmail.com",
+                  role = c("aut", "cre"))
+Description: Automates the downloading and merging of Afrobarometer
+	survey data (questionnaires and respondent spatial locations). Requires
+	user to furnish restricted access data (e.g. spatial data).
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+  downloader,
+  dplyr,
+  haven,
+  readr,
+  RSQLite,
+  sf,
+  sp
+RoxygenNote: 6.0.1
