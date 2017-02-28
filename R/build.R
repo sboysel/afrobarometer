@@ -77,6 +77,7 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
     survey <- haven::as_factor(survey)
     survey <- dplyr::mutate_if(survey, is.factor, as.character)
     survey <- dplyr::mutate(survey, round = x)
+    survey <- dplyr::arrange(survey, respno)
 
     fp <- file.path(
       getOption("afrobarometer.data"),
@@ -91,7 +92,11 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
 
       # Not really necessary to make the data spatial at this point
       #
-      # message(" - Transform")
+      message(" - Transform")
+      names(loc) <- tolower(names(loc))
+      loc <- dplyr::select(loc, respno, latitute, longitude)
+      loc <- dplyr::arrange(loc, respno)
+
       # loc <- sf::st_as_sf(
       #          loc,
       #          coords = c("longitude", "latitude"),
@@ -108,6 +113,7 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
       survey <- dplyr::left_join(
         x = loc,
         y = survey,
+        by = "respno"
       )
 
     }
