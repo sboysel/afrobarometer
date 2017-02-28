@@ -94,7 +94,7 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
       #
       message(" - Transform")
       names(loc) <- tolower(names(loc))
-      loc <- dplyr::select(loc, respno, latitute, longitude)
+      loc <- dplyr::select(loc, respno, latitude, longitude)
       loc <- dplyr::arrange(loc, respno)
 
       # loc <- sf::st_as_sf(
@@ -105,7 +105,6 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
       # sf::st_crs(loc) <- sf::st_crs(
       #   "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
       # )
-      
       # sf::st_geometry(survey) <- NULL
 
       message(paste("Round", x, "Merge"))
@@ -115,6 +114,7 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
         y = survey,
         by = "respno"
       )
+      # survey %>% dplyr::filter(is.na(latitude)) %>% dplyr::distinct(country)
 
     }
     ## (3) Merge
