@@ -89,22 +89,25 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
       message(" - Read")
       loc <- readr::read_csv(file = fp)
 
-      message(" - Transform")
-      loc <- sf::st_as_sf(
-               loc,
-               coords = c("longitude", "latitude"),
-               remove = FALSE
-      )
-      sf::st_crs(loc) <- sf::st_crs(
-        "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-      )
+      # Not really necessary to make the data spatial at this point
+      #
+      # message(" - Transform")
+      # loc <- sf::st_as_sf(
+      #          loc,
+      #          coords = c("longitude", "latitude"),
+      #          remove = FALSE
+      # )
+      # sf::st_crs(loc) <- sf::st_crs(
+      #   "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+      # )
+      
+      # sf::st_geometry(survey) <- NULL
 
       message(paste("Round", x, "Merge"))
 
-      sf::st_geometry(survey) <- NULL
       survey <- dplyr::left_join(
-        x = survey,
-        y = loc,
+        x = loc,
+        y = survey,
       )
 
     }
