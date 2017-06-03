@@ -1,7 +1,7 @@
 Package: afrobarometer
 Type: Package
 Title: Load Afrobarometer data 
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: person("Sam", "Boysel", email = "sboysel@gmail.com",
                   role = c("aut", "cre"))
 Description: Automates the downloading and merging of Afrobarometer
@@ -15,7 +15,7 @@ Imports:
   dplyr,
   haven,
   readr,
-  RSQLite,
-  sf,
-  sp
+  MonetDBLite,
+  DBI
 RoxygenNote: 6.0.1
+Suggests: testthat

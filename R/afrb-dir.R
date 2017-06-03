@@ -1,8 +1,8 @@
-#' Set the Afrobarometer data directory 
+#' Set the Afrobarometer data directory
 #'
 #' Customize where the data is cached.  Must be run explicitly by the user.
 #'
-#' @param path Character scalar containing the file path to set. Run 
+#' @param path Character scalar containing the file path to set. Run
 #' \code{afrb_dir()} without any paramters to use \code{base::tempdir()}.
 #' @return Sets the afrobarometer data directory and database file invisibly.
 #'
@@ -18,71 +18,59 @@
 #' \code{afrb_dir()}.
 #'
 #' @examples
-#' 
+#'
 #' library(afrobarometer)
 #' afrb_dir("~/foo")
 #'
-#' @name afrb_dir
-NULL
-
 #' @export
-#' @rdname afrb_dir
 afrb_dir <- function(path = tempdir()) {
 
   path <- normalizePath(path)
 
   op <- options()
   op.afrobarometer <- list(
-    afrobarometer.data = path,
-    afrobarometer.sqlite = file.path(path, "afrobarometer.sqlite")
+    afrobarometer.data = path
   )
   toset <- !(names(op.afrobarometer) %in% names(op))
 
-  message(paste("Setting options(afrobarometer.data) to", path))
-  message(paste("Setting options(afrobarometer.sqlite) to",
-                file.path(path, "afrobarometer.sqlite")))
-  message(paste("Spatial data should be placed in the `locations`",
+  message(paste("[afrb] Setting options(afrobarometer.data) to", path))
+  message(paste("[afrb] Spatial data should be placed in the `locations`",
                 "subdirectory of the Afrobarometer data directory.",
                 "For example, if you have spatial data for Rounds 3",
                 "and 4, you should place the spatial data as follows:"))
-  message("")
-  message(file.path(path, "locations/Locations_R3.csv"))
-  message(file.path(path, "locations/Locations_R4.csv"))
-  message("")
-  message(paste("To change the data directory to file path x, use",
-                "afrobarometer::set_data_dir(x)"))
+  message("[afrb]")
+  message(paste("[afrb]", file.path(path, "locations/Locations_R3.csv")))
+  message(paste("[afrb]", file.path(path, "locations/Locations_R4.csv")))
+  message("[afrb]")
+  message(paste("[afrb] To change the data directory to file path x, use",
+                "afrobarometer::afrb_dir(x)"))
 
   if (any(toset)) options(op.afrobarometer[toset])
 
   make_data_dir(path)
 
-  invisible()
+  invisible(getOption("afrobarometer.data"))
 
 }
 
+#' @keywords internal
 make_data_dir <- function(path) {
 
   path <- normalizePath(path)
 
-  message("Creating directories")
+  message("[afrb] Creating directories")
   lapply(
-    c(path, file.path(path, c("questionnaires", "locations"))),
+    c(path, file.path(path, c("questionnaires", "locations", "codebooks"))),
     function(x) {
-      message(paste(" -", x, "..."))
+      if (dir.exists(x)) {
+        message(paste("[afrb] -", x, "(exists)"))
+      } else {
+        message(paste("[afrb] -", x, "(created)"))
+      }
       invisible(dir.create(x, showWarnings = FALSE, recursive = TRUE))
     }
   )
 
-}
-
-make_sqlite_db <- function(overwrite = FALSE) {
-
-  fp <- getOption("afrobarometer.sqlite")
-
-  if (file.exists(fp) && overwrite) {
-    invisible(file.remove(fp))
-  }
-
-  dplyr::src_sqlite(fp, create = TRUE)
+  invisible(path)
 
 }

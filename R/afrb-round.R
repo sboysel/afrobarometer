@@ -20,10 +20,11 @@
 #' @export
 afrb_round <- function(round) {
 
-  afrb.db <- make_sqlite_db(overwrite = FALSE)
+  afrb.db <- make_monetdb(overwrite = FALSE)
 
-  tbl.lzy <- dplyr::tbl(afrb.db, paste0("R", round))
+  # tbl.lzy <- dplyr::tbl(afrb.db, paste0("afrobarometer_round_", round))
+  # dplyr::collect(tbl.lzy, n = Inf)
 
-  dplyr::collect(tbl.lzy, n = Inf)
+  DBI::dbReadTable(afrb.db, paste0("afrobarometer_round_", round))
 
 }
