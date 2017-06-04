@@ -4,20 +4,20 @@
 \alias{afrb_build}
 \title{Build a local copy of the Afrobarometer database}
 \usage{
-afrb_build(rounds = 1:6, overwrite_db = FALSE)
+afrb_build(rounds = 1:6, overwrite = FALSE)
 }
 \arguments{
 \item{rounds}{A sequence of integers indicating which rounds to build.  As
-of February 2017, there are six rounds.  Default is \code{seq(1, 6)}.}
+of February 2017, there are six rounds.  Default is value \code{1:6}.}
 
-\item{overwrite_db}{A boolean value indicating whether or not the SQLite
+\item{overwrite}{A boolean value indicating whether or not the SQLite
 database in the local Afrobarometer data directory should be overwritten
 when \code{afrb_build} is run.  Default is \code{FALSE}.}
 }
 \value{
 Builds the database in \code{options("afrobarometer.data")},
-downloading files as needed into subdirectories and merging the resulting
-data in the SQLite database file \code{options("afrobarometer.sqlite")}.
+downloading files as needed into sub-directories and merging the resulting
+data \code{file.path(options("afrobarometer.data"), "build")}.
 }
 \description{
 Automates the downloading and merging of the Afrobarometer data.  Fetches
@@ -26,7 +26,8 @@ any missing, publicly available files, creates a master MonetDB database in
 the questionnaires for each round.
 }
 \details{
-Meant to be run between \code{afrb_dir} and \code{afrb_round}.
+May only run \code{afrb_round} after \code{afrb_dir} and before
+\code{afrb_round}.
 }
 \examples{
 \dontrun{
@@ -36,7 +37,8 @@ afrb_dir(path = "~/foo")
 # This will fail if the database is already populated with merged tables.
 afrb_build(rounds = 3:4)
 # download all rounds and overwrite the existing database.
-afrb_build(rounds = 3:4, overwrite_db = TRUE)
+afrb_build(rounds = 3:4, overwrite = TRUE)
+r3 <- afrb_round(round = 3)
 }
 
 }

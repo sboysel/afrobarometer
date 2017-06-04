@@ -2,4 +2,5 @@
 
 export(afrb_build)
 export(afrb_dir)
+export(afrb_list_rounds)
 export(afrb_round)

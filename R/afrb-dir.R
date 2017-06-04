@@ -1,21 +1,23 @@
 #' Set the Afrobarometer data directory
 #'
-#' Customize where the data is cached.  Must be run explicitly by the user.
+#' Initialize the Afrobarometer data directory for the session.
 #'
-#' @param path Character scalar containing the file path to set. Run
-#' \code{afrb_dir()} without any paramters to use \code{base::tempdir()}.
-#' @return Sets the afrobarometer data directory and database file invisibly.
+#' @param path a string containing the file path to set as the Afrobarometer data directory
+#' \code{getOptions("afrobarometer.data")}). Run \code{afrb_dir()} without any parameters
+#' to use \code{path = base::tempdir()}.
+#' @return Sets the Afrobarometer data directory and invisibly returns the path
+#' to the directory as a string.
 #'
-#' @details Sets the options \code{afrobarometer.data} and
-#' \code{afrobarometer.sqlite}, the paths of the local Afrobarometer data cache
-#' and SQLite database respectively.  The questionnaire data will be
-#' automatically downloaded into the subdirectory \code{questionnaires}.  The
-#' user is expected to manually add spatial data CSV files in the format
-#' \code{locations/Location_Rk.csv} where \code{locations} is a subdirectory of
-#' the Afrobrometer data folder, \code{afrobarometer.data}.  \code{afrb_dir()}
-#' automatically creates \code{locations}, so the user simply has to place the
-#' spatial data CSVs in the \code{locations} subdirectory after running
-#' \code{afrb_dir()}.
+#' @details Sets the options the Afrobarometer data directory: \code{afrobarometer.data}.
+#' This directory is where raw and merged data is cached across sessions. \code{afrb_dir(path)}
+#' creates the following subdirectories:
+#' \itemize{
+#' \item{codebooks}{Codebooks (PDF) for each round are downloaded and stored in \code{path/codebooks}.}
+#' \item{locations}{Afrobarometer restricted access georeferenced data (CSV) should be stored in
+#'       \code{path/locations}. The user is expected to manually place each CSV file of georeferenced
+#'       data in \code{locations} like \code{path/locations/Location_R*.csv}.}
+#' \item{questionnaires}{Afrobarometer survey questionnaires (SAS) are downloaded and stored in \code{path/questionnaires}.}
+#' }
 #'
 #' @examples
 #'

@@ -72,36 +72,42 @@
     </div>
 
     
-    <p>After the local database has been build, this function reads data for the
-specified round into R as a local tibble.</p>
+    <p>After the local database has been built (<code><a href='afrb_build.html'>afrb_build</a></code>), <code>afrb_round</code>
+reads data for the specified round into the workspace as a <code>data.frame</code>.</p>
     
 
-    <pre class="usage"><span class='fu'>afrb_round</span>(<span class='no'>round</span>)</pre>
+    <pre class="usage"><span class='fu'>afrb_round</span>(<span class='kw'>round</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+
+<span class='fu'>afrb_list_rounds</span>()</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>round</th>
-      <td><p>An integer of the round to select.  As of February 2017, there
-is questionnaire data available for Rounds 1 through 6.</p></td>
+      <td><p>An integer of the round to select.  <code>round %in% 1:6</code> must be true</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>tbl A local tibble with data for the round.  If spatial data is
-available for the round, then the objet returned by
-<code>afrobarometer::afrb_round(x)</code> will be merged spatial and questionnaire
-data for round <code>x</code>.</p>
+    <p><code>afrb_round(x)</code> returns a <code>data.frame</code> for Round ]codex.  <code>afrb_list_rounds</code>
+returns a character vector of file paths for built datasets from <code><a href='afrb_build.html'>afrb_build</a></code>,
+if any exist.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>afrb_round</code> loads built data for round as a <code>data.frame</code>.  Assumes
+<code><a href='afrb_build.html'>afrb_build</a></code> has been run.  <code>afrb_list_rounds</code> lists built datasets in the
+Afrobarometer data directory, if any exist.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
   <span class='fu'>library</span>(<span class='no'>afrobarometer</span>)
   <span class='fu'><a href='afrb_dir.html'>afrb_dir</a></span>(<span class='st'>"~/foo"</span>)
-  <span class='fu'><a href='afrb_build.html'>afrb_build</a></span>(<span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-  <span class='no'>r3</span> <span class='kw'>&lt;-</span> <span class='fu'>afrb_round</span>(<span class='fl'>3</span>)
+  <span class='fu'><a href='afrb_build.html'>afrb_build</a></span>(<span class='kw'>rounds</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='no'>r3</span> <span class='kw'>&lt;-</span> <span class='fu'>afrb_round</span>(<span class='kw'>round</span> <span class='kw'>=</span> <span class='fl'>3</span>)
 })</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -110,6 +116,8 @@ data for round <code>x</code>.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

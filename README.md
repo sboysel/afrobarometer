@@ -10,24 +10,15 @@ The `afrobarometer` automates laoding Afrobarometer Survey data into the R envir
 Install
 -------
 
-Install `afrobarometer` package
-
 ``` r
 devtools::install_github("sboysel/afrobarometer")
 ```
 
-Note that the following packages must be installed. It may be required that some system software packages need to be installed outside of R.
-
-| R package | Dependencies |
-|-----------|--------------|
-| `rgdal`   | `gdal`       |
-| `rgeos`   | `geos`       |
-
-Required Data
--------------
+Data
+----
 
 -   Open access data: individual responses to survey questionnaires.
--   Restricted access data (optional): spatial locations, recently administered rounds.
+-   Restricted access data (optional, but must be placed manually): spatial locations, recently administered rounds.
 
 The `afrobarometer` package fetches any public access data necessary and merges the available spatial data with the questionnaire data. If spatial data is not provided for a specific round, the final table is simply the questionnaire data.
 
@@ -53,8 +44,26 @@ afrb_dir(path = "~/Dropbox/dataset/Afrobarometer")
 Build the database locally
 
 ``` r
-afrb_build(rounds = c(3, 4), overwrite_db = TRUE)
+afrb_build(rounds = 3:4, overwrite = TRUE)
 ```
+
+Open access questionnaire data and codebooks are downloaded as needed and placed in the Afrobarometer data directory, . If spatial data is available, it is merged to questionnaire data for each round. Built datasets are stored in the subdirectory of . The Afrobarometer directory should now have the following structure:
+
+    .
+    ├── build
+    │   ├── afrb_3.rds
+    │   └── afrb_4.rds
+    ├── locations
+    │   ├── Locations_R3.csv
+    │   └── Locations_R4.csv
+    ├── questionnaires
+    │   ├── merged_r3_data.sav
+    │   └── merged_r4_data.sav
+    └── codebooks
+        ├── merged_r3_codebook2_0.pdf
+        └── merged_r4_codebook3.pdf
+
+    4 directories, 8 files
 
 Pull the merged Round 3 data into R
 
@@ -78,9 +87,8 @@ This package simply structures the Afrobarometer data for analysis. Any use of t
 TODO
 ----
 
--   \[ \] Package tests
+-   \[ \] Package tests (afrobarometer Coverage: 18.28%)
 -   \[x\] Download codebooks
 -   \[x\] Discuss merging details: take lat + long + respno
--   \[x\] Switch to MonetDB
--   \[ \] Merge on disk
+-   \[x\] Switch to caching merged data as `rds` in `build` directory.
 -   \[ \] Merge multiple rounds together (Inter-round question correspondence, if possible)

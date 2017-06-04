@@ -78,7 +78,7 @@ any missing, publicly available files, creates a master MonetDB database in
 the questionnaires for each round.</p>
     
 
-    <pre class="usage"><span class='fu'>afrb_build</span>(<span class='kw'>rounds</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>6</span>, <span class='kw'>overwrite_db</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>afrb_build</span>(<span class='kw'>rounds</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>6</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -86,10 +86,10 @@ the questionnaires for each round.</p>
     <tr>
       <th>rounds</th>
       <td><p>A sequence of integers indicating which rounds to build.  As
-of February 2017, there are six rounds.  Default is <code>seq(1, 6)</code>.</p></td>
+of February 2017, there are six rounds.  Default is value <code>1:6</code>.</p></td>
     </tr>
     <tr>
-      <th>overwrite_db</th>
+      <th>overwrite</th>
       <td><p>A boolean value indicating whether or not the SQLite
 database in the local Afrobarometer data directory should be overwritten
 when <code>afrb_build</code> is run.  Default is <code>FALSE</code>.</p></td>
@@ -99,12 +99,13 @@ when <code>afrb_build</code> is run.  Default is <code>FALSE</code>.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Builds the database in <code>options("afrobarometer.data")</code>,
-downloading files as needed into subdirectories and merging the resulting
-data in the SQLite database file <code>options("afrobarometer.sqlite")</code>.</p>
+downloading files as needed into sub-directories and merging the resulting
+data <code>file.path(options("afrobarometer.data"), "build")</code>.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Meant to be run between <code>afrb_dir</code> and <code>afrb_round</code>.</p>
+    <p>May only run <code>afrb_round</code> after <code>afrb_dir</code> and before
+<code>afrb_round</code>.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -119,7 +120,8 @@ data in the SQLite database file <code>options("afrobarometer.sqlite")</code>.</
   <span class='co'># This will fail if the database is already populated with merged tables.</span>
   <span class='fu'>afrb_build</span>(<span class='kw'>rounds</span> <span class='kw'>=</span> <span class='fl'>3</span>:<span class='fl'>4</span>)
   <span class='co'># download all rounds and overwrite the existing database.</span>
-  <span class='fu'>afrb_build</span>(<span class='kw'>rounds</span> <span class='kw'>=</span> <span class='fl'>3</span>:<span class='fl'>4</span>, <span class='kw'>overwrite_db</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='fu'>afrb_build</span>(<span class='kw'>rounds</span> <span class='kw'>=</span> <span class='fl'>3</span>:<span class='fl'>4</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='no'>r3</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='afrb_round.html'>afrb_round</a></span>(<span class='kw'>round</span> <span class='kw'>=</span> <span class='fl'>3</span>)
 })</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -5,16 +5,17 @@
 #' \code{options(afrobarometer.data)}, and merges available spatial data with
 #' the questionnaires for each round.
 #'
-#' @param rounds A sequence of integers indicating which rounds to build.  As
-#' of February 2017, there are six rounds.  Default is \code{seq(1, 6)}.
-#' @param overwrite_db A boolean value indicating whether or not the SQLite
+#' @param rounds A vector of integers indicating which rounds to build.  Default
+#' is value \code{1:6}.
+#' @param overwrite A boolean value indicating whether or not the SQLite
 #' database in the local Afrobarometer data directory should be overwritten
 #' when \code{afrb_build} is run.  Default is \code{FALSE}.
 #' @return Builds the database in \code{options("afrobarometer.data")},
-#' downloading files as needed into subdirectories and merging the resulting
-#' data in the SQLite database file \code{options("afrobarometer.sqlite")}.
+#' downloading files as needed into sub-directories and merging the resulting
+#' data \code{file.path(options("afrobarometer.data"), "build")}.
 #'
-#' @details Meant to be run between \code{afrb_dir} and \code{afrb_round}.
+#' @details May only run \code{afrb_round} after \code{afrb_dir} and before
+#' \code{afrb_round}.
 #'
 #' @examples
 #' \dontrun{
@@ -24,13 +25,14 @@
 #' # This will fail if the database is already populated with merged tables.
 #' afrb_build(rounds = 3:4)
 #' # download all rounds and overwrite the existing database.
-#' afrb_build(rounds = 3:4, overwrite_db = TRUE)
+#' afrb_build(rounds = 3:4, overwrite = TRUE)
+#' r3 <- afrb_round(round = 3)
 #' }
 #'
 #' @seealso \code{\link{afrb_dir}}
 #'
 #' @export
-afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
+afrb_build <- function(rounds = 1:6, overwrite = FALSE) {
 
   if (is.null(getOption("afrobarometer.data"))) {
     stop(paste("[afrb] Afrobarometer data directory has not been set, please run",
@@ -43,7 +45,20 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
     stop(paste("[afrb]", getOption("afrobarometer.data"), "does not exist.  Please run `afrb_dir(path)` to set the Afrobarometer data directory."))
   }
 
-  afrb.db <- make_monetdb(overwrite = overwrite_db)
+  afrb_build_dir <- file.path(getOption("afrobarometer.data"), "build")
+
+  if (length(afrb_list_rounds()) > 0) {
+
+    if (overwrite) {
+
+      message(paste("[afrb] Deleting", afrb_build_dir))
+      unlink(x = afrb_build_dir, recursive = TRUE)
+      dir.create(path = afrb_build_dir, recursive = TRUE, showWarnings = FALSE)
+
+    } else {
+      stop(paste("[afrb]", afrb_build_dir, "exists and is non-empty.  Please run `afrb_round(round)` to load the merged data."))
+    }
+  }
 
   afrb.urls <- c(
     "http://afrobarometer.org/sites/default/files/data/round-1/merged_r1_data.sav",
@@ -67,7 +82,7 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
 
   lapply(rounds, function(x) {
 
-    # x <- 4
+    message(paste("[afrb] Round", x))
 
     cb.fp <- file.path(
       getOption("afrobarometer.data"),
@@ -76,9 +91,9 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
     )
 
     if (!file.exists(cb.fp)) {
-      message(paste("[afrb] Round", x, "Codebook"))
+      message("[afrb] .. Codebook")
 
-      message("[afrb] - Downloading")
+      message("[afrb] .... Downloading")
 
       downloader::download(
         url = afrb.cbs[x],
@@ -86,7 +101,7 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
       )
     }
 
-    message(paste("[afrb] Round", x, "Questionnaire"))
+    message("[afrb] .. Questionnaire")
 
     fp.q <- file.path(
       getOption("afrobarometer.data"),
@@ -95,12 +110,12 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
     )
 
     if (!file.exists(fp.q)) {
-      message("[afrb] - Downloading")
+      message("[afrb] .... Downloading")
       downloader::download(url = afrb.urls[x], destfile = fp.q)
     }
-    message("[afrb] - Read")
+    message("[afrb] .... Read")
     survey <- haven::read_sav(file = fp.q)
-    message("[afrb] - Transform")
+    message("[afrb] .... Transform")
 
     # Hotfix for bad colnames
     names(survey) <- gsub("\\$", "", tolower(names(survey)))
@@ -109,7 +124,14 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
     survey <- dplyr::mutate_all(survey, as.character)
     survey <- dplyr::mutate(survey, round = x)
 
-    # arrange by respondent number, if present
+    afrb_build_dir <- file.path(getOption("afrobarometer.data"), "build")
+
+    if (!dir.exists(afrb_build_dir)) {
+      dir.create(path = afrb_build_dir)
+    }
+
+    afrb_fp <- file.path(afrb_build_dir, paste0("afrb_", x, ".rds"))
+
     if ("respno" %in% names(survey)) {
       survey <- dplyr::arrange_(survey, .dots = c("respno"))
     }
@@ -121,83 +143,48 @@ afrb_build <- function(rounds = 1:6, overwrite_db = FALSE) {
     )
 
     if (file.exists(fp.l)) {
-      message(paste("[afrb] Round", x, "Locations"))
-      message("[afrb] - Read")
+
+      message("[afrb] .. Locations")
+
+      message("[afrb] .... Read")
       loc <- readr::read_csv(
         file = fp.l,
         col_types = readr::cols(
-          respno = readr::col_character(),
-          district = readr::col_character(),
-          townvill = readr::col_character(),
-          eanumb = readr::col_character(),
-          country = readr::col_character(),
-          region = readr::col_character(),
           latitude = readr::col_double(),
           longitude = readr::col_double()
         ),
         progress = TRUE
       )
 
-      # Not really necessary to make the data spatial at this point
-      #
-      message("[afrb] - Transform")
+      message("[afrb] .... Transform")
       names(loc) <- tolower(names(loc))
       loc <- dplyr::select_(loc, .dots = c("respno", "latitude", "longitude"))
       loc <- dplyr::arrange_(loc, .dots = c("respno"))
 
-      message(paste("[afrb] Round", x, "Merge"))
+      message("[afrb] .... Merge with questionnaire")
 
-      survey <- dplyr::left_join(
-        x = loc,
-        y = survey,
+      afrb <- dplyr::left_join(
+        x = survey,
+        y = loc,
         by = "respno"
       )
 
+      message("[afrb] .... Write to database")
+      readr::write_rds(x = afrb, path = afrb_fp, compress = "gz")
+
+    } else {
+
+      message("[afrb] .... Write to database")
+      readr::write_rds(x = survey, path = afrb_fp, compress = "gz")
+
     }
 
-    ## (3) Merge
-    message(paste("[afrb] Round", x, "Write to disk"))
-
-    DBI::dbWriteTable(afrb.db, paste0("afrobarometer_round_", x), survey)
-
     invisible()
+
   })
 
   message("[afrb] Local Afrobarometer database complete!")
-  message(paste("[afrb] Use afrobarometer::round(x) to load a local data.frame",
+  message(paste("[afrb] Use afrb_round(x) to load a local data.frame",
                 " of merged data for Round x."))
-
-}
-
-#' @keywords internal
-make_monetdb <- function(overwrite = FALSE) {
-
-  if (overwrite) rm_monetdb()
-
-  dbdir <- file.path(getOption("afrobarometer.data"), "monetdblite")
-
-  if (overwrite) {
-    message(paste("[afrb] Creating database:", dbdir))
-  } else {
-    message(paste("[afrb] Connecting to database:", dbdir))
-  }
-
-  DBI::dbConnect(MonetDBLite::MonetDBLite(), dbdir)
-
-}
-
-#' @keywords internal
-rm_monetdb <- function() {
-
-  stopifnot(!identical(getOption("afrobarometer.data"), ""))
-
-  dbdir <- file.path(getOption("afrobarometer.data"), "monetdblite")
-
-  if (dir.exists(dbdir)) {
-    message(paste("[afrb] Deleting database:", dbdir))
-    unlink(dbdir, recursive = TRUE)
-  } else {
-    message(paste("[afrb] Database does not exist, nothing deleted:", dbdir))
-  }
 
 }

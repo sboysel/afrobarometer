@@ -84,11 +84,12 @@ Afrobarometer Survey Data into the R workspace.</p>
   <dt>afrb_dir(path)</dt><dd><p>Sets the Afrobarometer data directory to
   <code>path</code>.</p></dd>
   <dt>afrb_build(rounds, overwrite_db)</dt><dd><p>After running <code>afrb_dir</code>, the
-  function <code>afrb_build</code> constructs the local database for the surveys
-  specified in <code>rounds</code>.  If <code>overwrite_db</code> is set to <code>TRUE</code>,
-  the existing database file is overwritten.</p></dd>
-  <dt>afrb_round(round)</dt><dd><p>Extracts merged data for Round <code>code</code> from
-  the loceal SQLite database into a <code>tibble</code> in <code>R</code>.</p></dd>
+  function <code>afrb_build</code> merges available data for the survey rounds
+  specified by the integer vector <code>rounds</code>.  If <code>overwrite</code> is <code>TRUE</code>,
+  the existing built data is overwritten.</p></dd>
+  <dt>afrb_round(round)</dt><dd><p>Extracts merged data for Round <code>round</code> from
+  <code>build</code> subdirectory of <code>getOption("afrobarometer.data")</code> into a
+  <code>data.frame</code>.</p></dd>
 </dl><p>Open access data is downloaded if needed.  The user is expected to manually
 set the optional restricted access data in the <code>locations</code> subdirectory
 of the Afrobarometer data directory, <code>getOption("afrobarometer.data")</code>,
@@ -99,11 +100,11 @@ such as spatial locations of survey respondents.</p>
     <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
   <span class='fu'>library</span>(<span class='no'>afrobarometer</span>)
   <span class='fu'><a href='afrb_dir.html'>afrb_dir</a></span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='st'>"~/foo"</span>)
-  <span class='co'># download first 3 rounds but do not overwrite the existing database file.</span>
-  <span class='co'># This will fail if the database file has tables.</span>
+  <span class='co'># download first 3 rounds but do not overwrite the existing database.</span>
+  <span class='co'># This will fail if the database has already been built.</span>
   <span class='fu'><a href='afrb_build.html'>afrb_build</a></span>(<span class='kw'>rounds</span> <span class='kw'>=</span> <span class='fl'>3</span>:<span class='fl'>4</span>)
-  <span class='co'># download all rounds (rounds 1 through 6) and overwrite the existing database file.</span>
-  <span class='fu'><a href='afrb_build.html'>afrb_build</a></span>(<span class='kw'>rounds</span> <span class='kw'>=</span> <span class='fl'>3</span>:<span class='fl'>4</span>, <span class='kw'>overwrite_db</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='co'># download all rounds (rounds 1 through 6) and overwrite the existing database.</span>
+  <span class='fu'><a href='afrb_build.html'>afrb_build</a></span>(<span class='kw'>rounds</span> <span class='kw'>=</span> <span class='fl'>3</span>:<span class='fl'>4</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
   <span class='co'># load round 4 from the database into a data.frame</span>
   <span class='no'>afrb4</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='afrb_round.html'>afrb_round</a></span>(<span class='fl'>4</span>)
 })</div></pre>

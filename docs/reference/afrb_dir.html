@@ -72,7 +72,7 @@
     </div>
 
     
-    <p>Customize where the data is cached.  Must be run explicitly by the user.</p>
+    <p>Initialize the Afrobarometer data directory for the session.</p>
     
 
     <pre class="usage"><span class='fu'>afrb_dir</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='fu'>tempdir</span>())</pre>
@@ -82,27 +82,28 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>path</th>
-      <td><p>Character scalar containing the file path to set. Run
-<code>afrb_dir()</code> without any paramters to use <code>base::tempdir()</code>.</p></td>
+      <td><p>a string containing the file path to set as the Afrobarometer data directory
+<code>getOptions("afrobarometer.data")</code>). Run <code>afrb_dir()</code> without any parameters
+to use <code>path = base::tempdir()</code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Sets the afrobarometer data directory and database file invisibly.</p>
+    <p>Sets the Afrobarometer data directory and invisibly returns the path
+to the directory as a string.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Sets the options <code>afrobarometer.data</code> and
-<code>afrobarometer.sqlite</code>, the paths of the local Afrobarometer data cache
-and SQLite database respectively.  The questionnaire data will be
-automatically downloaded into the subdirectory <code>questionnaires</code>.  The
-user is expected to manually add spatial data CSV files in the format
-<code>locations/Location_Rk.csv</code> where <code>locations</code> is a subdirectory of
-the Afrobrometer data folder, <code>afrobarometer.data</code>.  <code>afrb_dir()</code>
-automatically creates <code>locations</code>, so the user simply has to place the
-spatial data CSVs in the <code>locations</code> subdirectory after running
-<code>afrb_dir()</code>.</p>
+    <p>Sets the options the Afrobarometer data directory: <code>afrobarometer.data</code>.
+This directory is where raw and merged data is cached across sessions. <code>afrb_dir(path)</code>
+creates the following subdirectories:</p><ul>
+<li><p>codebooksCodebooks (PDF) for each round are downloaded and stored in <code>path/codebooks</code>.</p></li>
+<li><p>locationsAfrobarometer restricted access georeferenced data (CSV) should be stored in
+      <code>path/locations</code>. The user is expected to manually place each CSV file of georeferenced
+      data in <code>locations</code> like <code>path/locations/Location_R*.csv</code>.</p></li>
+<li><p>questionnairesAfrobarometer survey questionnaires (SAS) are downloaded and stored in <code>path/questionnaires</code>.</p></li>
+</ul>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
